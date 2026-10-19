@@ -25,48 +25,44 @@ A lista atual contém 11 domínios lógicos. A revisão abaixo mantém todas as 
 6. **O Kafka destina-se a eventos de domínio assíncronos, não a consultas síncronas.** Processos como login, autorização imediata, validação final de disponibilidade e início de pagamento geralmente exigem um resultado síncrono. Eventos servem para projeções, notificações, auditoria e reações entre domínios. É fundamental planejar aspectos como idempotência no consumo, novas tentativas (*retries*), tratamento de mensagens não processáveis ​​(*dead-letter queues*), versionamento de eventos e identificadores de correlação.
 7. **Não utilize a abordagem “MVC primeiro, arquitetura hexagonal depois” como justificativa para misturar regras de negócio com *controllers* ou classes do *framework*.** Ao implementar o padrão MVC, mantenha as regras de domínio em serviços de aplicação ou de domínio, garantindo a cobertura por testes unitários. Dessa forma, uma eventual migração futura será apenas uma refatoração de limites (*boundary refactoring*), e não uma reescrita completa do código.
 
+## 3. Conjunto recomendado para a primeira implementação
 
-## 3. Recommended first implementation set
+### Recomendação: quatro serviços implantáveis ​​abrangendo cinco domínios lógicos
 
-### Recommended: four deployable services spanning five logical domains
-
-| Initial service | Logical domains covered | Reason |
+| Serviço inicial | Domínios lógicos abrangidos | Motivo |
 |---|---|---|
-| 1. Identity & Access | Domain 1 | Provides account identity, authentication, roles, and authorization foundations. |
-| 2. Profiles & Professionals | Domain 2 | Enables client and professional profiles and professional activation state. |
-| 3. Catalog & Offers | Domain 3 | Lets professionals publish services, prices, and durations. |
-| 4. Scheduling & Appointments | Domains 5 + 6 | Delivers the core booking journey while keeping slot availability and booking conflict rules transactionally close. |
+| 1. Identidade e Acesso | Domínio 1 | Fornece a base para identidade de conta, autenticação, funções (papéis) e autorização. |
+| 2. Perfis e Profissionais | Domínio 2 | Permite a criação de perfis de clientes e profissionais, bem como o estado de ativação do profissional. |
+| 3. Catálogo e Ofertas | Domínio 3 | Permite que profissionais publiquem serviços, preços e durações. |
+| 4. Agendamento e Compromissos | Domínios 5 + 6 | Oferece o fluxo principal de agendamento, mantendo a disponibilidade de horários e as regras de conflito de agendamento integradas de forma transacional. |
 
-This adjusts the proposed selection of **1, 2, 3, and 5**: include **domain 6 (Appointments)** inside the fourth service instead of treating domain 5 as an isolated service. This is the stronger option because a schedule without a booking owner cannot validate real booking conflicts end to end. The codebase can still maintain separate `availability` and `appointments` modules and separate use cases/aggregates.
+Isso ajusta a seleção proposta anteriormente (**1, 2, 3 e 5**): inclui o **domínio 6 (Compromissos)** dentro do quarto serviço, em vez de tratar o domínio 5 como um serviço isolado. Esta é a opção mais robusta, pois um sistema de horários sem um responsável pelo agendamento não consegue validar conflitos reais de forma completa (fim a fim). A base de código ainda pode manter módulos separados para `disponibilidade` e `compromissos`, bem como casos de uso e agregados distintos.
 
-### If the team insists on keeping domain 5 as its own microservice
+### Caso a equipe insista em manter o domínio 5 como um microsserviço independente
 
-That is possible, but its initial scope should be explicitly limited to working hours, exceptions, and blocks. Domain 5 must not claim that a slot is definitively bookable based only on an asynchronous projection of appointments. When domain 6 is introduced, domain 6 must perform an authoritative, atomic conflict check or implement a robust reservation protocol. The user-visible booking flow will remain incomplete until domain 6 exists.
+Isso é possível, mas o escopo inicial deve ser limitado explicitamente a horários de trabalho, exceções e bloqueios. O domínio 5 não deve determinar que um horário está definitivamente disponível para reserva baseando-se apenas em uma projeção assíncrona de compromissos. Quando o domínio 6 for introduzido, ele deverá realizar uma verificação de conflito atômica e definitiva, ou implementar um protocolo de reserva robusto. O fluxo de agendamento, tal como visto pelo usuário, permanecerá incompleto até que o domínio 6 seja implementado.
 
-### Important distinction: architecture practice versus product delivery
+### Distinção importante: prática de arquitetura versus entrega de produto
 
-If the primary goal is learning microservices, Kafka, TDD, MVC, and later hexagonal architecture, the recommended four-service phase is a reasonable training sequence. If the primary goal is to launch the business quickly, 11 independently deployed microservices are likely unnecessary operational overhead; a modular monolith with these bounded contexts is a lower-risk starting point. The domain map remains useful in either architecture.
+Se o objetivo principal for o aprendizado de microsserviços, Kafka, TDD, MVC e, posteriormente, arquitetura hexagonal, a fase recomendada de quatro serviços constitui uma sequência de treinamento razoável. Se o objetivo principal for lançar o negócio rapidamente, 11 microsserviços implantados de forma independente provavelmente representarão uma sobrecarga operacional desnecessária; um monólito modular, estruturado com base nesses contextos delimitados (*bounded contexts*), é um ponto de partida com menor risco. O mapa de domínios continua sendo útil, independentemente da arquitetura escolhida. ## 4. Catálogo de domínios
 
-## 4. Domain catalogue
+### Domínio 1 — Identidade e Acesso
 
-### Domain 1 — Identity & Access
+**Objetivo:** Gerenciar a identidade da conta, credenciais, autenticação, funções (papéis) e políticas de acesso.
+**Entidades principais:** `Account` (Conta), `Credential` (Credencial), `RoleAssignment` (Atribuição de Função), `ExternalIdentity` (Identidade Externa), `RecoveryChallenge` (Desafio de Recuperação) — os nomes são ilustrativos.
+**Responsabilidades (domínio):** ID da conta, identificadores de login, hashes de credenciais, ciclo de vida da autenticação, funções/reivindicações (*claims*) e status da conta (habilitada/desabilitada).
+**Não abrange:** detalhes do perfil do cliente, perfil público profissional, serviços, agendamentos, pagamentos ou conteúdo relacionado a casos de moderação.
 
-**Purpose:** Own account identity, credentials, authentication, roles, and access policy.  
-**Core entities:** `Account`, `Credential`, `RoleAssignment`, `ExternalIdentity`, `RecoveryChallenge` (names are illustrative).  
-**Owns:** account ID, login identifiers, credential hashes, authentication lifecycle, roles/claims, account-level enabled/disabled status.  
-**Does not own:** client profile details, professional public profile, services, appointments, payments, or moderation case content.
+**Responsabilidades (ações)**
+- Registrar e autenticar usuários.
+- Recuperar acesso e invalidar sessões/tokens, quando aplicável.
+- Suportar login via redes sociais (*social login*), caso essa funcionalidade seja incluída no lançamento.
+- Representar as funções `CLIENT` (Cliente), `PROFESSIONAL` (Profissional) e `ADMIN` (Administrador), e aplicar políticas de autorização.
+- Publicar eventos essenciais do ciclo de vida da conta para outros domínios.
 
-**Responsibilities**
-- Register and authenticate users.
-- Recover access and invalidate sessions/tokens where applicable.
-- Support social login only if selected for the release.
-- Represent the roles `CLIENT`, `PROFESSIONAL`, and `ADMIN` and enforce authorization policies.
-- Publish minimal account lifecycle events for other domains.
-
-**Inputs/dependencies:** identity credentials from the user; optional external identity provider.  
-**Outputs/events:** `identity.account-created.v1`, `identity.account-status-changed.v1`, `identity.role-assigned.v1`.  
-**Critical rules:** no plaintext passwords; unique normalized login identifier; server-side authorization; account ID is stable and never reused.
-
+**Entradas/dependências:** credenciais de identidade fornecidas pelo usuário; provedor de identidade externo (opcional).
+**Saídas/eventos:** `identity.account-created.v1`, `identity.account-status-changed.v1`, `identity.role-assigned.v1`.
+**Regras críticas:** proibição de senhas em texto simples (*plaintext*); identificador de login único e normalizado; autorização realizada no lado do servidor (*server-side*); o ID da conta deve ser estável e nunca reutilizado.
 ### Domínio 2 — Perfis e Profissionais
 
 **Objetivo:** Gerenciar os dados de perfil do cliente, a apresentação pública do profissional e sua elegibilidade para listagem na plataforma.
