@@ -38,7 +38,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-001-06 | Cadastrar períodos distintos no mesmo dia: ambos são persistidos quando válidos. |
 | CT-AGE-001-08 | Consultar os horários após o cadastro: os períodos correspondem aos dados persistidos. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -59,7 +59,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-002-06 | Atualizar períodos de um profissional sem agendamentos: os novos períodos ficam disponíveis para consultas posteriores. |
 | CT-AGE-002-07 | Consultar agendamentos históricos após atualização: os registros anteriores são preservados. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -79,7 +79,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-003-07 | Criar bloqueio fora dos horários regulares de atendimento: o sistema trata a solicitação de acordo com a política definida. |
 | CT-AGE-003-08 | Consultar o bloqueio após criá-lo: os dados persistidos correspondem ao intervalo solicitado. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -98,7 +98,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-004-05 | Remover bloqueio quando existe outro bloqueio ou agendamento no mesmo intervalo: o horário só volta a ficar disponível se todas as condições permitirem. |
 | CT-AGE-004-06 | Repetir a remoção: o sistema mantém um estado consistente. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -120,7 +120,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-005-11 | Consultar próximo de um limite de atendimento: o resultado respeita a duração completa e os limites definidos. |
 | CT-AGE-005-12 | Consultar em fuso horário ou transição de horário de verão, se aplicável: os horários retornados correspondem à política temporal do sistema. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -142,7 +142,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-006-15 | Repetir a mesma requisição por falha de comunicação: o sistema segue a política de idempotência adotada e não cria duplicidade indevida. |
 | CT-AGE-006-16 | Criar agendamento cujo término coincide exatamente com o início do próximo: o resultado segue a regra de intervalos adotada. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -168,7 +168,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-007-06 | Consultar agendamento cancelado ou concluído: o registro é retornado com o estado correto. |
 | CT-AGE-007-07 | Consultar detalhes: preço e duração históricos correspondem aos valores registrados no agendamento. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -190,7 +190,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-008-06 | Listagem contém agendamentos com diferentes estados: os estados atuais são apresentados corretamente. |
 | CT-AGE-008-07 | Listar agendamentos com parâmetros de paginação válidos, se suportados: os resultados são consistentes entre páginas. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -208,7 +208,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-009-04 | Filtrar agenda por estado: os resultados respeitam o filtro solicitado. |
 | CT-AGE-009-06 | Consultar agenda com agendamentos cancelados e concluídos: os estados são distinguidos corretamente. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -228,7 +228,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-010-09 | Cancelar agendamento: o horário pode voltar a ficar disponível, desde que nenhuma outra restrição o impeça. |
 | CT-AGE-010-10 | Cancelamento com pagamento associado: o resultado financeiro segue o fluxo de pagamento e reembolso definido. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -249,7 +249,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-011-07 | Cancelar agendamento: o histórico é preservado e o intervalo deixa de ser ocupado por esse compromisso, se aplicável. |
 | CT-AGE-011-08 | Cancelar agendamento: a notificação correspondente é produzida, se esse recurso estiver habilitado. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -268,7 +268,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-012-07 | Confirmar agendamento válido: horário, preço e duração registrados não são alterados indevidamente. |
 | CT-AGE-012-08 | Confirmar agendamento: a notificação é produzida quando prevista. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -288,7 +288,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-013-07 | Concluir atendimento: o estado atualizado é retornado nas consultas posteriores. |
 | CT-AGE-013-08 | Concluir atendimento: os eventos necessários para habilitar avaliação ou outros processos são produzidos, quando previstos. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -308,7 +308,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-014-07 | Registrar ausência com pagamento associado: os efeitos financeiros seguem a política definida. |
 | CT-AGE-014-08 | Registrar ausência: o estado atualizado permanece disponível no histórico. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -327,7 +327,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-015-03 | Criar agendamentos sobrepostos para profissionais diferentes: ambos podem ser aceitos, se não houver outra restrição. |
 | CT-AGE-015-05 | Tentar reservar período ocupado por agendamento cancelado: o intervalo não é bloqueado por esse registro, desde que não existam outras restrições. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
@@ -353,7 +353,7 @@ Os cenários estão agrupados por história de usuário e, dentro de cada histó
 | CT-AGE-016-07 | Gerar conteúdo da notificação: informações privadas desnecessárias não são expostas. |
 | CT-AGE-016-08 | Notificação não pode ser enviada temporariamente: o sistema segue a política definida de repetição ou registro da falha. |
 
-### Cenários de insucesso
+#### Cenários de insucesso
 
 | ID | Cenário e resultado esperado |
 |---|---|
